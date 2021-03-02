@@ -40,6 +40,48 @@ func TestPutX509SVID(t *testing.T) {
         BasicConstraintsValid: true,
     }
 
+	svidSessionTemplate := `
+name: ${session-name-selector}
+predecessor: ${session-hash-selector}
+version: "0.3"
+secrets:
+  - name: svid
+    kind: x509
+    value: |
+        ${svid}
+    export:
+        session: ${session-name-selector}
+        session_hash: ${session-hash-selector}
+    private_key: svid_key
+  - name: svid_key
+    kind: private-key
+    export:
+        session: ${session-name-selector}
+        session_hash: ${session-hash-selector}
+    value: |
+        ${svid_key}`
+    CASessionTemplate := `
+name: spire-ca
+version: "0.3"
+predecessor: ${predecessor}
+secrets:
+  - name: spire-ca
+    kind: x509-ca
+    export_public: true
+    value: |
+        ${trust-bundle-ca}`
+
+   federatedBundleTemplate := `
+name: spire-federated-bundles
+version: "0.3"
+predecessor: ${predecessor}
+secrets:
+  - name: spire-federated-bundles
+    kind: x509-ca
+    export_public: true
+    value: |
+        ${trust-bundle-ca}`
+
     // Mock http server
     mocks := httptest.NewServer(
         http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -70,10 +112,23 @@ func TestPutX509SVID(t *testing.T) {
     var tdir = "predecessor_dir"
     var tcert = "cert.crt"
     var tkey = "key.key"
+    var stemp = "svid_session_template.yaml"
+    var catemp = "ca_session_template.yaml"
+    var fbtemp = "fed_bundles_session_template.yaml"
     dname, err := ioutil.TempDir("", tdir)
     if err != nil {
         panic(err)
     }
+    stempf := filepath.Join(dname, stemp)
+    catempf := filepath.Join(dname, catemp)
+    fbtempf := filepath.Join(dname, fbtemp)
+
+    err = ioutil.WriteFile(stempf, []byte(svidSessionTemplate), 0644)
+    check(err)
+    err = ioutil.WriteFile(catempf, []byte(CASessionTemplate), 0644)
+    check(err)
+    err = ioutil.WriteFile(fbtempf, []byte(federatedBundleTemplate), 0644)
+    check(err)
     certf := filepath.Join(dname, tcert)
     certOut, err := os.Create(certf)
     if err != nil {
@@ -120,7 +175,7 @@ func TestPutX509SVID(t *testing.T) {
             },
             SessionName: "t1",
             SessionHash: "h1",
-            config:      "cas_predecessor_dir = \"" + dname +"\"\ncas_address = \"" + mocks.URL + "\"\ncas_client_certificate = \"" + certf + "\"\ncas_client_key = \"" + keyf + "\"",
+            config:      "cas_predecessor_dir = \"" + dname +"\"\ncas_address = \"" + mocks.URL + "\"\ncas_client_certificate = \"" + certf + "\"\ncas_client_key = \"" + keyf + "\"\nsvid_session_template_file = \"" + stempf + "\"\nca_bundle_session_template_file = \"" + catempf + "\"\nfederated_bundles_session_template_file = \"" + fbtempf + "\"",
             err:         "scone: errr",
         },
         {
@@ -209,5 +264,11 @@ func pemBlockForKey(priv interface{}) *pem.Block {
         return &pem.Block{Type: "EC PRIVATE KEY", Bytes: b}
     default:
         return nil
+    }
+}
+
+func check(e error) {
+    if e != nil {
+        panic(e)
     }
 }
