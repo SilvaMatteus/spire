@@ -16,7 +16,7 @@ import (
 	"github.com/hashicorp/hcl"
 	"github.com/jinzhu/gorm"
 
-	_ "github.com/jinzhu/gorm/dialects/sqlite" // gorm sqlite dialect init registration
+	// _ "github.com/jinzhu/gorm/dialects/sqlite" // gorm sqlite dialect init registration
 	"github.com/spiffe/spire/pkg/common/bundleutil"
 	"github.com/spiffe/spire/pkg/common/catalog"
 	"github.com/spiffe/spire/pkg/common/idutil"
@@ -632,8 +632,6 @@ func (ds *Plugin) openDB(cfg *configuration, isReadOnly bool) (*gorm.DB, string,
 
 	ds.log.Info("Opening SQL database", telemetry.DatabaseType, cfg.DatabaseType)
 	switch cfg.DatabaseType {
-	case SQLite:
-		dialect = sqliteDB{log: ds.log}
 	case PostgreSQL:
 		dialect = postgresDB{}
 	case MySQL:
