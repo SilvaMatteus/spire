@@ -29,9 +29,11 @@ type Cgroup struct {
 //  - http://man7.org/linux/man-pages/man7/cgroups.7.html
 //  - https://www.kernel.org/doc/Documentation/cgroup-v2.txt
 func GetCgroups(pid int32, fs FileSystem) ([]Cgroup, error) {
+	fmt.Println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> GET CGROUPS")
 	path := fmt.Sprintf("/proc/%v/cgroup", pid)
 	file, err := fs.Open(path)
 	if err != nil {
+		fmt.Println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> CAPTURED")
 		return nil, err
 	}
 	defer file.Close()

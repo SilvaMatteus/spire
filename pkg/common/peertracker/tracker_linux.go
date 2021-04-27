@@ -46,7 +46,7 @@ func newLinuxWatcher(info CallerInfo) (*linuxWatcher, error) {
 	// Grab a handle to proc first since that's the fastest thing we can do
 	procfd, err := syscall.Open(procPath, syscall.O_RDONLY, 0)
 	if err != nil {
-		return nil, fmt.Errorf("could not open caller's proc directory: %v", err)
+		return nil, fmt.Errorf("could not open caller's proc directory !!!!!!!!!!!!!!!: %v", err)
 	}
 
 	starttime, err := getStarttime(info.PID)

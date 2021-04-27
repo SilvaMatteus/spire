@@ -102,7 +102,7 @@ func (e *Endpoints) ListenAndServe(ctx context.Context) error {
 	}
 	defer l.Close()
 
-	e.log.Info("Starting Workload and SDS APIs")
+	e.log.Info("MOD Starting Workload and SDS APIs!!!")
 	errChan := make(chan error)
 	go func() { errChan <- server.Serve(l) }()
 

@@ -2,7 +2,7 @@ package endpoints
 
 import (
 	"context"
-
+	"fmt"
 	attestor "github.com/spiffe/spire/pkg/agent/attestor/workload"
 	"github.com/spiffe/spire/pkg/common/peertracker"
 	"github.com/spiffe/spire/proto/spire/common"
@@ -15,6 +15,7 @@ type peerTrackerAttestor struct {
 }
 
 func (a peerTrackerAttestor) Attest(ctx context.Context) ([]*common.Selector, error) {
+	fmt.Println("<><><><><<><><><><><> func (a peerTrackerAttestor) Attest(ctx context.Context) ([]*common.Selector, error)")
 	watcher, ok := peertracker.WatcherFromContext(ctx)
 	if !ok {
 		return nil, status.Error(codes.Internal, "peer tracker watcher missing from context")

@@ -174,8 +174,10 @@ func (h *Handler) ValidateJWTSVID(ctx context.Context, req *workload.ValidateJWT
 
 // FetchX509SVID processes request for an x509 SVID
 func (h *Handler) FetchX509SVID(_ *workload.X509SVIDRequest, stream workload.SpiffeWorkloadAPI_FetchX509SVIDServer) error {
+	fmt.Println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>   HANDLER FetchX509SVID")
 	ctx := stream.Context()
 	log := rpccontext.Logger(ctx)
+	log.Debug(">>>>>>>>>>>>>>   HANDLER FetchX509SVID DEBUG")
 
 	selectors, err := h.c.Attestor.Attest(ctx)
 	if err != nil {
@@ -189,6 +191,7 @@ func (h *Handler) FetchX509SVID(_ *workload.X509SVIDRequest, stream workload.Spi
 	for {
 		select {
 		case update := <-subscriber.Updates():
+	                fmt.Println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>   SendX509SVIDResponse")
 			if err := sendX509SVIDResponse(update, stream, log); err != nil {
 				return err
 			}

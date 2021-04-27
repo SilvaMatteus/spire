@@ -85,7 +85,7 @@ func (l *Listener) Accept() (net.Conn, error) {
 
 		watcher, err := l.Tracker.NewWatcher(caller)
 		if err != nil {
-			l.log.WithError(err).Warn("Connection failed during accept")
+			l.log.WithError(err).Warn("MOD Connection failed during accept")
 			conn.Close()
 			continue
 		}
