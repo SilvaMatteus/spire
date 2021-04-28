@@ -126,21 +126,21 @@ func (p *SecretsManagerPlugin) Configure(ctx context.Context, req *spi.Configure
 
 	caBundleSessionTemplate = string(caSessionTemplateBytes)
 	sessionNameCA, err = getSessionNameFromTemplate(caBundleSessionTemplate)
-	if err != nil {
-		return &spi.ConfigureResponse{}, err
-	}
+	// if err != nil {
+	// 	return &spi.ConfigureResponse{}, err
+	// }
 
 	federatedBundlesSessionTemplate = string(federatedBundlesSessionTemplateBytes)
 	sessionNameFederatedBundles, err = getSessionNameFromTemplate(federatedBundlesSessionTemplate)
-	if err != nil {
-		return &spi.ConfigureResponse{}, err
-	}
+	// if err != nil {
+	// 	return &spi.ConfigureResponse{}, err
+	// }
 
 	svidSessionTemplate = string(svidSessionTemplateBytes)
 	sessionNameSVIDPrefix, err = getSVIDSessionNameFromTemplate(svidSessionTemplate)
-	if err != nil {
-		return &spi.ConfigureResponse{}, err
-	}
+	// if err != nil {
+	// 	return &spi.ConfigureResponse{}, err
+	// }
 
 	p.mtx.Lock()
 	defer p.mtx.Unlock()
